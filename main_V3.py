@@ -21,7 +21,7 @@ class WiFiManager(App):
         self.monitoring = False
         self.os_type = None
         self.terminal_text = ""
-        Window.clearcolor = self.background_color  # Set window to white
+        Window.clearcolor = self.background_color
 
     def get_os_commands(self):
         """Return OS-specific commands"""
@@ -107,13 +107,13 @@ class WiFiManager(App):
         if self.is_wifi_powered_down():
             self.update_terminal("Wi-Fi powered down. Powering up...")
             os.system(commands["enable"])
-            time.sleep(5)
+            time.sleep(2)  # Reduced from 5 to 2 seconds
         elif not power_up_only:
             self.update_terminal("Toggling Wi-Fi...")
             os.system(commands["disable"])
-            time.sleep(5)
+            time.sleep(2)  # Reduced from 5 to 2 seconds
             os.system(commands["enable"])
-            time.sleep(5)
+            time.sleep(2)  # Reduced from 5 to 2 seconds
 
     def get_available_wifi(self):
         """Get list of available Wi-Fi networks"""
@@ -152,11 +152,11 @@ class WiFiManager(App):
         commands = self.get_os_commands()
         if commands:
             os.system(commands["connect"](ssid))
-            time.sleep(5)
+            time.sleep(2)  # Reduced from 5 to 2 seconds
 
     def update_terminal(self, message):
         """Update the terminal with new lines at the bottom"""
-        self.terminal_text = f"{self.terminal_text}\n{message}"[-500:]  # Append new message, limit to 500 chars
+        self.terminal_text = f"{self.terminal_text}\n{message}"[-500:]
         self.terminal_label.text = self.terminal_text
 
     def monitor_connection(self, dt):
@@ -182,13 +182,11 @@ class WiFiManager(App):
 
     def refresh_wifi_list(self, instance):
         """Refresh the Wi-Fi list in the table"""
-        self.wifi_table.clear_widgets()  # Clear all widgets
-        # Add header
+        self.wifi_table.clear_widgets()
         self.wifi_table.add_widget(Label(text="Si No", color=[0, 0, 0, 1], size_hint_x=0.1, bold=True, height=40))
         self.wifi_table.add_widget(Label(text="Radio", color=[0, 0, 0, 1], size_hint_x=0.2, bold=True, height=40))
         self.wifi_table.add_widget(Label(text="WiFi Name", color=[0, 0, 0, 1], size_hint_x=0.4, bold=True, height=40))
         self.wifi_table.add_widget(Label(text="BSSID", color=[0, 0, 0, 1], size_hint_x=0.3, bold=True, height=40))
-        # Add networks
         networks = self.get_available_wifi()
         if not networks:
             self.update_terminal("No networks found")
@@ -219,7 +217,7 @@ class WiFiManager(App):
             self.monitoring = True
             self.connect_to_wifi(self.selected_ssid)
             self.update_terminal(f"Connecting to {self.selected_ssid}...")
-            Clock.schedule_interval(self.monitor_connection, 10)
+            Clock.schedule_interval(self.monitor_connection, 5)  # Reduced from 10 to 5 seconds
         else:
             self.update_terminal("Please select a Wi-Fi and OS!")
 
@@ -265,7 +263,7 @@ class WiFiManager(App):
             text="Terminal output will appear here\n",
             color=[0, 0, 0, 1],
             size_hint_y=None,
-            height=200,  # Fixed height for terminal area
+            height=200,
             halign='left',
             valign='bottom',
             text_size=(None, None)
